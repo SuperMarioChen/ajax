@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title></title>
+		<style>
+			
+		</style>
+		
+		<script src="./src/jquery-3.3.1.js"></script>
+		<script type="text/html">
+			
+		</script>
+	</head>
+
+	<body>
+
+		用户名：<input type="text" name="user" id="user" /><span id="tip"></span><br/>
+		密码：<input type="text" id="password" /><br/>
+		<input type="button" value="提交" />
+		<script>
+			
+			function ajax(options){
+				var defaults={
+					method='get',
+					data: {},
+					async: true,
+					success:function (){},
+					error:function (){}
+				}
+				for(var i in options){
+					defaults[i]=options[i]
+				}
+				var xhr=new XMLHttpRequest
+				var d = '';
+				for(var s in defaults.data){
+					d+=s+'='+defaults.data[s]+'&'
+				}
+				d = d.slice(0,-1)
+				if(defaults.method=='get'){
+					defaults.url+='?'+d
+				}	
+				xhr.open(defaults.method,defaults.url,defaults,async)
+				xhr.onload=function(){
+					if(xhr.status>=200&xhr.status>400){
+						defaults.success(xhr.response)
+					}else{
+						defaults.error(
+							{
+								//没拿到数据 把状态传出去
+							status: xhr.status, //状态数字表示
+							statusText: xhr.statusText //状态短语
+						}
+						)
+					}
+				}
+				if(defaults.method === 'get'){
+					xhr.send();
+				}
+				if(defaults.method === 'post'){
+					xhr.setRequestHeader( 'Content-Type','application/x-www-form-urlencoded');
+					xhr.send(d);
+				}
+				user.onblur = function (){
+					ajax(
+						{
+							url:'http://localhost:80/backend/php/get.php',
+							method:'get',
+							data:{
+								user: this.value
+							},
+							success:function (data){
+								console.log(data)
+								tip.innerText = data;	
+							},
+							error:function (e){
+								console.log(e)	
+							}
+						}
+					)
+				}
+
+
+			}
+			
+		</script>
+	</body>
+</html>
